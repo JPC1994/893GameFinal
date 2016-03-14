@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" nextobjectid="22">
+ <tileset firstgid="1" name="2ypcht4" tilewidth="32" tileheight="32" tilecount="1024">
+  <image source="resources/2ypcht4.png" trans="ff00ff" width="1024" height="1024"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="50" height="50">
+  <data encoding="base64" compression="zlib">
+   eJztkl0KwjAQBvODegBP0PYtr55BPYFnUI+tXsQNCA2BttBUs5UZGAghS/ZL1hgAAAAAAAAAAIBpNuJW3NVupJCjeBLPtRtZgL2v3cEyHMihCnLoghy6IIcutOcI0t/DGvPMfNn+zFXO3MR7kmWq5peET1/WGeMyvRuvnVPzDULytqU5av1NOkvxvtIcNf4mnyU/s4+aOdJZauSeVuxcv06N+xc/bFozVF9KHE23cuOTN2K7cjtyqJIcuiSHLv8pxxsaIVMX
+  </data>
+ </layer>
+ <objectgroup name="Object Layer 1">
+  <properties>
+   <property name="unitScale" value="0.5"/>
+  </properties>
+  <object id="6" name="box" type="fixture" x="288" y="1216" width="96" height="96">
+   <properties>
+    <property name="body" value="level"/>
+    <property name="categoryBits" value="2"/>
+    <property name="maskBits" value="1"/>
+    <property name="userData" value="wood box"/>
+   </properties>
+  </object>
+  <object id="12" name="ground" type="fixture" x="0" y="1312" width="1600" height="288">
+   <properties>
+    <property name="body" value="level"/>
+    <property name="categoryBits" value="2"/>
+    <property name="maskBits" value="1"/>
+   </properties>
+  </object>
+  <object id="14" name="spawn point" type="object" x="64" y="1248" width="32" height="32">
+   <properties>
+    <property name="bodyType" value="StaticBody"/>
+    <property name="isSensor" value="true"/>
+    <property name="userData" value="spawn"/>
+   </properties>
+  </object>
+  <object id="15" name="spikes" type="fixture" x="576" y="1280" width="224" height="32">
+   <properties>
+    <property name="body" value="level"/>
+    <property name="categoryBits" value="3"/>
+    <property name="maskBits" value="1"/>
+    <property name="userData" value="spikes"/>
+   </properties>
+  </object>
+  <object id="17" name="level" type="object" x="0" y="0" width="1600" height="1600">
+   <properties>
+    <property name="isSensor" value="true"/>
+   </properties>
+  </object>
+  <object id="18" name="box" type="fixture" x="384" y="1120" width="192" height="192">
+   <properties>
+    <property name="body" value="level"/>
+    <property name="categoryBits" value="2"/>
+    <property name="maskBits" value="1"/>
+    <property name="userData" value="wood box"/>
+   </properties>
+  </object>
+  <object id="19" name="box" type="fixture" x="800" y="1120" width="192" height="192">
+   <properties>
+    <property name="body" value="level"/>
+    <property name="categoryBits" value="2"/>
+    <property name="maskBits" value="1"/>
+    <property name="userData" value="wood box"/>
+   </properties>
+  </object>
+  <object id="20" name="bridge" type="fixture" x="640" y="1120" width="96" height="32">
+   <properties>
+    <property name="body" value="level"/>
+    <property name="categoryBits" value="2"/>
+    <property name="maskBits" value="1"/>
+    <property name="userData" value="bridge"/>
+   </properties>
+  </object>
+  <object id="21" name="box" type="fixture" x="896" y="1184" width="192" height="128">
+   <properties>
+    <property name="body" value="level"/>
+    <property name="categoryBits" value="2"/>
+    <property name="maskBits" value="1"/>
+    <property name="userData" value="wood box"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
