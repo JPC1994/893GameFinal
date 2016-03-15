@@ -22,9 +22,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class Player extends Actor {
     State state;
-    Body bplayer;
-    BodyDef bdef;
-    FixtureDef fdefPlayer;
+    Body mainBody, footSensor;
+    BodyDef bdefMain, bdefFoot;
+    FixtureDef fdefPlayer, fdefFoot;
     PolygonShape shape;
     TextureAtlas taIdle = new TextureAtlas(Gdx.files.internal("player/idle/idle.pack"));
     TextureAtlas taRun = new TextureAtlas(Gdx.files.internal("player/run/run.pack"));
@@ -32,6 +32,7 @@ public class Player extends Actor {
     Sprite[] sRun = new Sprite[9];
     Animation idle, run;
     float elapsedTime = 0;
+    World world;
 
     boolean bRight = true;
 
@@ -40,6 +41,12 @@ public class Player extends Actor {
     }
 
     Player(World world, Vector2 spawnpoint) {
+        this.world = world;
+        createMainBody(spawnpoint);
+        createFootSensor();
+    }
+
+    private void createMainBody(Vector2 spawnpoint) {
         this.state = state.idle;
         for (int i = 1; i < 10; i++) {
             sIdle[i - 1] = new Sprite(taIdle.findRegion("idle (" + i + ")"));
@@ -47,69 +54,87 @@ public class Player extends Actor {
         }
         idle = new Animation(10, sIdle);
         run = new Animation(5, sRun);
-        bdef = new BodyDef();
+        bdefMain = new BodyDef();
         shape = new PolygonShape();
 
-        bdef.position.set(new Vector2(spawnpoint.x / 2, spawnpoint.y / 2));
-        bdef.type = BodyDef.BodyType.DynamicBody;
-        bplayer = world.createBody(bdef);
+        bdefMain.position.set(new Vector2(spawnpoint.x / 2, spawnpoint.y / 2));
+        bdefMain.type = BodyDef.BodyType.DynamicBody;
+        mainBody = world.createBody(bdefMain);
+        mainBody.setFixedRotation(true);
 
         shape.setAsBox(sIdle[0].getWidth() / 4, sIdle[0].getHeight() / 4);
         fdefPlayer = new FixtureDef();
         fdefPlayer.shape = shape;
-        fdefPlayer.filter.categoryBits = 1;
-        bplayer.setSleepingAllowed(false);
+        fdefPlayer.friction = 0;
+        mainBody.setSleepingAllowed(false);
+        mainBody.createFixture(fdefPlayer);
+        shape.dispose();
+    }
 
-        bplayer.setLinearDamping(1);
-        bplayer.createFixture(fdefPlayer);
+    private void createFootSensor() {
+        shape = new PolygonShape();
+
+        shape.setAsBox(sIdle[0].getWidth() / 4 - 4, 0.2f, new Vector2(mainBody.getWorldCenter().x / 4 - sIdle[0].getWidth() / 4 + 0.5f, mainBody.getPosition().y / 4 - sIdle[0].getHeight() - 9.5f), 0);
+        fdefFoot = new FixtureDef();
+        fdefFoot.isSensor = true;
+        fdefFoot.shape = shape;
+
+        mainBody.createFixture(fdefFoot);
+        shape.dispose();
     }
 
     Vector3 getPosition() {
-        return new Vector3(bplayer.getPosition().x, bplayer.getPosition().y, 0);
+        return new Vector3(mainBody.getPosition().x, mainBody.getPosition().y, 0);
     }
 
     void draw(SpriteBatch sb) {
         elapsedTime++;
         if (this.state == state.idle) {
             if (bRight) {
-                sb.draw(idle.getKeyFrame(elapsedTime, true), bplayer.getPosition().x - sIdle[0].getWidth() / 4, bplayer.getPosition().y - sIdle[0].getHeight() / 4, sIdle[0].getWidth() / 2, sIdle[0].getHeight() / 2);
+                sb.draw(idle.getKeyFrame(elapsedTime, true), mainBody.getPosition().x - sIdle[0].getWidth() / 4, mainBody.getPosition().y - sIdle[0].getHeight() / 4, sIdle[0].getWidth() / 2, sIdle[0].getHeight() / 2);
             } else {
-                sb.draw(idle.getKeyFrame(elapsedTime, true), bplayer.getPosition().x + sIdle[0].getWidth() / 4, bplayer.getPosition().y - sIdle[0].getHeight() / 4, -sIdle[0].getWidth() / 2, sIdle[0].getHeight() / 2);
+                sb.draw(idle.getKeyFrame(elapsedTime, true), mainBody.getPosition().x + sIdle[0].getWidth() / 4, mainBody.getPosition().y - sIdle[0].getHeight() / 4, -sIdle[0].getWidth() / 2, sIdle[0].getHeight() / 2);
             }
         } else if (this.state == state.right) {
-            sb.draw(run.getKeyFrame(elapsedTime, true), bplayer.getPosition().x - sIdle[0].getWidth() / 4, bplayer.getPosition().y - sIdle[0].getHeight() / 4, sRun[0].getWidth() / 2, sRun[0].getHeight() / 2);
+            sb.draw(run.getKeyFrame(elapsedTime, true), mainBody.getPosition().x - sIdle[0].getWidth() / 4, mainBody.getPosition().y - sIdle[0].getHeight() / 4, sRun[0].getWidth() / 2, sRun[0].getHeight() / 2);
         } else if (this.state == state.left) {
-            sb.draw(run.getKeyFrame(elapsedTime, true), bplayer.getPosition().x + sIdle[0].getWidth() / 4, bplayer.getPosition().y - sIdle[0].getHeight() / 4, -sRun[0].getWidth() / 2, sRun[0].getHeight() / 2);
+            sb.draw(run.getKeyFrame(elapsedTime, true), mainBody.getPosition().x + sIdle[0].getWidth() / 4, mainBody.getPosition().y - sIdle[0].getHeight() / 4, -sRun[0].getWidth() / 2, sRun[0].getHeight() / 2);
         }
     }
 
     void move() {
+        if (mainBody.getLinearVelocity().x > 100) {
+            mainBody.getLinearVelocity().x--;
+        } else if (mainBody.getLinearVelocity().x < -100) {
+            mainBody.getLinearVelocity().x++;
+        }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             this.state = state.left;
             bRight = false;
-            //bplayer.setLinearVelocity(-100, bplayer.getLinearVelocity().y);
-            if (bplayer.getLinearVelocity().x != -200) {
-                bplayer.applyForceToCenter(-200, 0, true);
-            }
+            //mainBody.applyForceToCenter(-200, 0, true);
+            mainBody.setLinearVelocity(-100, mainBody.getLinearVelocity().y);
         } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             this.state = state.right;
             bRight = true;
-            if (bplayer.getLinearVelocity().x != 200) {
-                bplayer.applyForceToCenter(200, 0, true);
-            }
+            //mainBody.applyForceToCenter(200, 0, true);
+            mainBody.setLinearVelocity(100, mainBody.getLinearVelocity().y);
         }
     }
 
     void stop() {
         this.state = state.idle;
-        bplayer.setLinearVelocity(0, bplayer.getLinearVelocity().y);
+        mainBody.setLinearVelocity(0, mainBody.getLinearVelocity().y);
     }
-
 
     boolean isGrounded = true;
 
     void jump() {
-        bplayer.setLinearVelocity(bplayer.getLinearVelocity().x, 200);
+        mainBody.applyLinearImpulse(new Vector2(0, mainBody.getMass() * 500), mainBody.getWorldCenter(), true);
+        //mainBody.setLinearVelocity(mainBody.getLinearVelocity().x, 50);
+    }
+
+    Vector2 getLinearVelocity() {
+        return mainBody.getLinearVelocity();
     }
 
 }

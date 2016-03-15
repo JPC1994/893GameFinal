@@ -41,34 +41,40 @@ public class TestGame implements Screen, InputProcessor {
     }
 
     private void initializeWorld() {
-        world = new World(new Vector2(0, -100), true);
+        world = new World(new Vector2(0, -200), true);
         world.setContactListener(new ContactListener() {
             @Override
             public void beginContact(Contact c) {
-                Fixture fa = c.getFixtureA();
-                Fixture fb = c.getFixtureB();
 
-                if (fa.getFilterData().categoryBits == 1 && fb.getFilterData().categoryBits == 2) {
-                }
-                if (fa.getFilterData().categoryBits == 2 && fb.getFilterData().categoryBits == 1) {
-                    player.isGrounded = true;
-                }
             }
 
             @Override
             public void endContact(Contact c) {
                 Fixture fa = c.getFixtureA();
                 Fixture fb = c.getFixtureB();
+                if (fa.getFilterData().categoryBits == 1) {
+                    player.isGrounded = false;
+                } else if (fb.getFilterData().categoryBits == 1) {
+                    player.isGrounded = false;
+                }
             }
 
             @Override
-            public void preSolve(Contact contact, Manifold oldManifold) {
+            public void preSolve(Contact c, Manifold oldManifold) {
+                Fixture fa = c.getFixtureA();
+                Fixture fb = c.getFixtureB();
 
+                if (fa.getFilterData().categoryBits == 1) {
+                    player.isGrounded = true;
+                } else if (fb.getFilterData().categoryBits == 1) {
+                    player.isGrounded = true;
+                }
             }
 
             @Override
-            public void postSolve(Contact contact, ContactImpulse impulse) {
-
+            public void postSolve(Contact c, ContactImpulse impulse) {
+                Fixture fa = c.getFixtureA();
+                Fixture fb = c.getFixtureB();
             }
         });
         map = new Map(world, "debugroom");
@@ -77,7 +83,8 @@ public class TestGame implements Screen, InputProcessor {
     private void initializeCamera() {
         b2dr = new Box2DDebugRenderer();
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 32 * 19, 32 * 10);
+        camera.setToOrtho(false, 32 * (19 / 2), 32 * (10 / 2));
+        //camera.setToOrtho(false, 32 * 19, 32 * 10);
         camera.update();
         tiledMapRenderer = new OrthogonalTiledMapRenderer(map.getMap(), map.getUnitScale());
     }
@@ -101,12 +108,13 @@ public class TestGame implements Screen, InputProcessor {
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
         b2dr.render(world, camera.combined);
-        player.move();
 
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         player.draw(batch);
         batch.end();
+
+        player.move();
     }
 
     @Override
@@ -136,7 +144,6 @@ public class TestGame implements Screen, InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        //player.setState(keycode);
         if (keycode == Input.Keys.X && player.isGrounded) {
             player.jump();
             player.isGrounded = false;
@@ -146,8 +153,9 @@ public class TestGame implements Screen, InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
-        if (keycode == com.badlogic.gdx.Input.Keys.LEFT || keycode == com.badlogic.gdx.Input.Keys.RIGHT)
+        if (keycode == com.badlogic.gdx.Input.Keys.LEFT || keycode == com.badlogic.gdx.Input.Keys.RIGHT) {
             player.stop();
+        }
         return false;
     }
 

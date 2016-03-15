@@ -16,6 +16,7 @@ public class Map {
 
     Box2DMapObjectParser b2dmop;
     String mapName;
+    BGM bgm;
 
     Map(World world, String mapName) {
         this.mapName = mapName;
@@ -24,6 +25,10 @@ public class Map {
         b2dmop.getBodies();
         b2dmop.getFixtures();
         b2dmop.getJoints();
+        bgm = new BGM(getBGM());
+        bgm.setLooping(true);
+        bgm.setVolume(0.1f);
+        bgm.play();
     }
 
     public TiledMap getMap() {
@@ -33,6 +38,12 @@ public class Map {
     public float getUnitScale() {
         b2dmop.setUnitScale(0.5f);
         return b2dmop.getUnitScale();
+    }
+
+    public String getBGM() {
+        String BGM = (String) getMap().getLayers().get("Object Layer 1").getObjects().get("level").getProperties().get("bgm");
+        System.out.println(BGM);
+        return BGM;
     }
 
     public Vector2 getSpawnpoint() {
