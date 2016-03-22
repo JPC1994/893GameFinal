@@ -51,4 +51,8 @@ public class Map {
         RectangleMapObject spawnpoint = (RectangleMapObject) layer.getObjects().get("spawn point");
         return new Vector2(spawnpoint.getRectangle().getX(), spawnpoint.getRectangle().getY());
     }
+
+    void pauseBGM() {
+        bgm.pause();
+    }
 }

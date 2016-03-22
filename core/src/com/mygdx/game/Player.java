@@ -65,7 +65,8 @@ public class Player extends Actor {
         shape.setAsBox(sIdle[0].getWidth() / 4, sIdle[0].getHeight() / 4);
         fdefPlayer = new FixtureDef();
         fdefPlayer.shape = shape;
-        fdefPlayer.friction = 0;
+        fdefPlayer.filter.categoryBits = 0;
+        fdefPlayer.friction = 1;
         mainBody.setSleepingAllowed(false);
         mainBody.createFixture(fdefPlayer);
         shape.dispose();
@@ -74,10 +75,10 @@ public class Player extends Actor {
     private void createFootSensor() {
         shape = new PolygonShape();
 
-        shape.setAsBox(sIdle[0].getWidth() / 4 - 4, 0.2f, new Vector2(mainBody.getWorldCenter().x / 4 - sIdle[0].getWidth() / 4 + 0.5f, mainBody.getPosition().y / 4 - sIdle[0].getHeight() - 9.5f), 0);
+        shape.setAsBox(sIdle[0].getWidth() / 4, 0.2f, new Vector2(mainBody.getWorldCenter().x / 4 - sIdle[0].getWidth() / 4 + 0.5f, mainBody.getPosition().y / 4 - sIdle[0].getHeight() - 9.5f), 0);
         fdefFoot = new FixtureDef();
-        fdefFoot.isSensor = true;
         fdefFoot.shape = shape;
+        fdefFoot.filter.categoryBits = 1;
 
         mainBody.createFixture(fdefFoot);
         shape.dispose();
