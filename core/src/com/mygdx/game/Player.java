@@ -38,6 +38,7 @@ public class Player extends Actor {
 
     enum State {
         idle, left, right
+        // enumeration for animations
     }
 
     Player(World world, Vector2 spawnpoint) {
@@ -70,6 +71,7 @@ public class Player extends Actor {
         mainBody.setSleepingAllowed(false);
         mainBody.createFixture(fdefPlayer);
         shape.dispose();
+        // set categorybit to 0 so it collides with nothing
     }
 
     private void createFootSensor() {
@@ -82,6 +84,7 @@ public class Player extends Actor {
 
         mainBody.createFixture(fdefFoot);
         shape.dispose();
+        // create a foot sensor to detect whether or not the player is grounded
     }
 
     Vector3 getPosition() {
@@ -89,6 +92,7 @@ public class Player extends Actor {
     }
 
     void draw(SpriteBatch sb) {
+        // drawing sprite on player body using default library, not using animatedbox2dsprite because it doesn't loop the animation
         elapsedTime++;
         if (this.state == state.idle) {
             if (bRight) {
@@ -104,6 +108,8 @@ public class Player extends Actor {
     }
 
     void move() {
+        // i don't even need to pass a keycode, i just call player.move() in render and i can check
+        // for keypresses by detecting if a button is down or not
         if (mainBody.getLinearVelocity().x > 100) {
             mainBody.getLinearVelocity().x--;
         } else if (mainBody.getLinearVelocity().x < -100) {
@@ -123,6 +129,7 @@ public class Player extends Actor {
     }
 
     void stop() {
+        // stop movement on release of keycode
         this.state = state.idle;
         mainBody.setLinearVelocity(0, mainBody.getLinearVelocity().y);
     }
@@ -130,8 +137,11 @@ public class Player extends Actor {
     boolean isGrounded = true;
 
     void jump() {
+        // using getmass so i can get around being limited by gravity
+        // gravity sucks
+        // there is one issue: jumping while moving gives you a lower jump height than jumping while standing
+        // used applyForceToCenter and setLinearVelocity, same result
         mainBody.applyLinearImpulse(new Vector2(0, mainBody.getMass() * 500), mainBody.getWorldCenter(), true);
-        //mainBody.setLinearVelocity(mainBody.getLinearVelocity().x, 50);
     }
 
     Vector2 getLinearVelocity() {

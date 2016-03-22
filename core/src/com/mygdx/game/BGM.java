@@ -4,6 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 
 public class BGM implements Music {
+
+    // purpose of class is just to play the music defined in the .tmx file
+    // only thing to really look at is the constructor otherwise who cares
+
     Music mBGM;
 
     BGM(String bgm) {

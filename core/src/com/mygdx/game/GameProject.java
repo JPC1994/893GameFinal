@@ -6,7 +6,7 @@ public class GameProject extends Game {
 
     @Override
     public void create() {
-        setScreen(new TestGame(this));
+        setScreen(new ScrTest(this));
     }
 
     @Override
