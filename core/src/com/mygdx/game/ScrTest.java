@@ -116,6 +116,8 @@ public class ScrTest implements Screen, InputProcessor {
         b2dr.render(world, camera.combined);
 
         batch.setProjectionMatrix(camera.combined);
+        // set the projection matrix as the camera so the tile layer on the map lines up with the bodies
+        // if this line wasn't here it wouldn't scale down
         batch.begin();
         player.draw(batch);
         batch.end();
