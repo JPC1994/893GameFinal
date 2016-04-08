@@ -61,6 +61,11 @@ public class Map {
         return new Vector2(spawnpoint.getRectangle().getX(), spawnpoint.getRectangle().getY());
         // basic spawnpoint, it's a object that the player is relocated to and created
     }
+    public Vector2 getEnemySpawn(){
+        MapLayer layer = this.getMap().getLayers().get("Object Layer 1");
+        RectangleMapObject enemyspawn = (RectangleMapObject) layer.getObjects().get("enemy spawn");
+        return new Vector2(enemyspawn.getRectangle().getX(), enemyspawn.getRectangle().getY());
+    }
 
     void pauseBGM() {
         bgm.pause();

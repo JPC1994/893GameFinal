@@ -33,6 +33,8 @@ public class Player extends Actor {
     Animation idle, run;
     float elapsedTime = 0;
     World world;
+    final int nFinHealth=3;
+    public int nCurHealth;
 
     boolean bRight = true;
 

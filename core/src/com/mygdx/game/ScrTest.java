@@ -18,7 +18,9 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
-
+/**
+ * Created by k9sty on 2016-03-12.
+ */
 public class ScrTest implements Screen, InputProcessor {
     Game game;
     World world;
@@ -27,7 +29,10 @@ public class ScrTest implements Screen, InputProcessor {
     Box2DDebugRenderer b2dr;
     TiledMapRenderer tiledMapRenderer;
     Player player;
+    //used array of sprites concept from the drop project at: https://github.com/Mrgfhci/Drop/blob/master/core/src/com/mygdx/drop/Drop.java line 58
+    Enemy[] arObenemy= new Enemy[2];
     SpriteBatch batch = new SpriteBatch();
+    int i;
 
     ScrTest(Game game) {
         this.game = game;
@@ -35,6 +40,7 @@ public class ScrTest implements Screen, InputProcessor {
         initializeWorld();
         initializeCamera();
         initializePlayer();
+        initializeEnemy();
     }
 
     private void initializeWorld() {
@@ -52,9 +58,9 @@ public class ScrTest implements Screen, InputProcessor {
                 Fixture fb = c.getFixtureB();
                 // only checking if one of the fixtures is the foot sensor - if the foot sensor is one of the contacts,
                 // then the other fixture is something it's allowed to collide with (maskBit = 1)
-                if (fa.getFilterData().categoryBits == 1) {
+                if (fa.getFilterData().categoryBits == 0) {
                     player.isGrounded = false;
-                } else if (fb.getFilterData().categoryBits == 1) {
+                } else if (fb.getFilterData().categoryBits == 0) {
                     player.isGrounded = false;
                 }
             }
@@ -71,6 +77,27 @@ public class ScrTest implements Screen, InputProcessor {
                     player.isGrounded = true;
                 } else if (fb.getFilterData().categoryBits == 1) {
                     player.isGrounded = true;
+                }
+                //http://box2d.org/manual.html#_Toc258082970 source for the way mask bits and categoryBits worked
+                if (fa.getFilterData().categoryBits==5&&fb.getFilterData().categoryBits==16){
+                    if(player.nCurHealth>0){
+                        player.nCurHealth-=1;
+                        System.out.println("***************************************************************************"+player.nCurHealth);
+
+                    }
+                    else{
+                        System.out.println("You are dead!");
+                    }
+                }
+                else if (fb.getFilterData().categoryBits==5&&fa.getFilterData().categoryBits==16){
+                    if(player.nCurHealth>0){
+                        player.nCurHealth-=1;
+                        System.out.println("***************************************************************************"+player.nCurHealth);
+
+                    }
+                    else{
+                        System.out.println("You are dead!");
+                    }
                 }
             }
 
@@ -97,7 +124,15 @@ public class ScrTest implements Screen, InputProcessor {
 
     private void initializePlayer() {
         player = new Player(world, map.getSpawnpoint());
+        player.nCurHealth=player.nFinHealth;
     }
+
+    private void initializeEnemy() {
+        for(i=0;i<2;i++) {
+            arObenemy[i] = new Enemy(world, map.getEnemySpawn());
+        }
+    }
+
 
     @Override
     public void show() {
@@ -120,9 +155,15 @@ public class ScrTest implements Screen, InputProcessor {
         // if this line wasn't here it wouldn't scale down
         batch.begin();
         player.draw(batch);
+        for(i=0;i<2;i++) {
+            arObenemy[i].draw(batch);
+        }
         batch.end();
 
         player.move();
+        for(i=0;i<2;i++) {
+            arObenemy[i].move(player.getPosition().x);
+        }
     }
 
     @Override
@@ -149,6 +190,7 @@ public class ScrTest implements Screen, InputProcessor {
     public void dispose() {
 
     }
+
 
     @Override
     public boolean keyDown(int keycode) {

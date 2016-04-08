@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" nextobjectid="22">
- <tileset firstgid="1" name="2ypcht4" tilewidth="32" tileheight="32" tilecount="1024">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" nextobjectid="25">
+ <tileset firstgid="1" name="2ypcht4" tilewidth="32" tileheight="32" tilecount="1024" columns="32">
   <image source="resources/2ypcht4.png" trans="ff00ff" width="1024" height="1024"/>
  </tileset>
  <layer name="Tile Layer 1" width="50" height="50">
@@ -78,6 +78,13 @@
     <property name="categoryBits" value="3"/>
     <property name="maskBits" value="1"/>
     <property name="userData" value="wood box"/>
+   </properties>
+  </object>
+  <object id="22" name="enemy spawn" type="object" x="448" y="1022" width="31" height="31">
+   <properties>
+    <property name="bodyType" value="StaticBody"/>
+    <property name="isSensor" value="true"/>
+    <property name="userData" value="spawn"/>
    </properties>
   </object>
  </objectgroup>
