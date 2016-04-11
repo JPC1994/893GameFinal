@@ -108,23 +108,38 @@ public class Player extends Actor {
 	}
 
 	void move() {
-		// i don't even need to pass a keycode, i just call player.move() in render and i can check
-		// for keypresses by detecting if a button is down or not
-		if(body.getLinearVelocity().x > 100) {
-			body.getLinearVelocity().x--;
-		} else if(body.getLinearVelocity().x < -100) {
-			body.getLinearVelocity().x++;
+		if(Gdx.input.isTouched()) {
+			int height = Gdx.graphics.getHeight();
+			int width = Gdx.graphics.getWidth();
+			int touchX = Gdx.input.getX();
+			int touchY = Gdx.input.getY(); // Don't get near this guy ;}
+
+			if(touchX > width - (width / 3f) && touchY > height - (height / 3f)) { // Bottom right
+				body.setLinearVelocity(100f, body.getLinearVelocity().y);
+				state = State.RIGHT;
+			} else if(touchX < (width / 3f) && touchY > height - (height / 3f)) { // Bottom left
+				body.setLinearVelocity(-100f, body.getLinearVelocity().y);
+				state = State.LEFT;
+			} else if(isGrounded && touchY > height - (height / 3)) { // Bottom middle
+				jump();
+			}
+		} else {
+			state = State.IDLE;
+			stop();
 		}
-		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			this.state = State.LEFT;
-			bRight = false;
-			//body.applyForceToCenter(-200, 0, true);
-			body.setLinearVelocity(-100, body.getLinearVelocity().y);
-		} else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			this.state = State.RIGHT;
-			bRight = true;
-			//body.applyForceToCenter(200, 0, true);
-			body.setLinearVelocity(100, body.getLinearVelocity().y);
+
+		if(Gdx.input.isKeyPressed(Input.Keys.ANY_KEY)) {
+			if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+				body.setLinearVelocity(-100f, body.getLinearVelocity().y);
+				state = State.LEFT;
+			} else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+				body.setLinearVelocity(100f, body.getLinearVelocity().y);
+				state = State.RIGHT;
+			} else stop();
+
+			if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+				jump();
+			}
 		}
 	}
 
