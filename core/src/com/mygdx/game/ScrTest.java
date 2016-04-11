@@ -18,224 +18,222 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
+
 /**
  * Created by k9sty on 2016-03-12.
  */
 public class ScrTest implements Screen, InputProcessor {
-    Game game;
-    World world;
-    Map map;
-    OrthographicCamera camera;
-    Box2DDebugRenderer b2dr;
-    TiledMapRenderer tiledMapRenderer;
-    Player player;
-    //used array of sprites concept from the drop project at: https://github.com/Mrgfhci/Drop/blob/master/core/src/com/mygdx/drop/Drop.java line 58
-    Enemy[] arObenemy= new Enemy[2];
-    SpriteBatch batch = new SpriteBatch();
-    int i;
+	Game game;
+	World world;
+	Map map;
+	OrthographicCamera camera;
+	Box2DDebugRenderer b2dr;
+	TiledMapRenderer tiledMapRenderer;
+	Player player;
+	//used array of sprites concept from the drop project at: https://github.com/Mrgfhci/Drop/blob/master/core/src/com/mygdx/drop/Drop.java line 58
+	Enemy[] arObenemy = new Enemy[2];
+	SpriteBatch batch = new SpriteBatch();
+	int i;
 
-    ScrTest(Game game) {
-        this.game = game;
+	ScrTest(Game game) {
+		this.game = game;
 
-        initializeWorld();
-        initializeCamera();
-        initializePlayer();
-        initializeEnemy();
-    }
+		initializeWorld();
+		initializeCamera();
+		initializePlayer();
+		initializeEnemy();
+	}
 
-    private void initializeWorld() {
-        world = new World(new Vector2(0, -200), true);
-        // create contact listener in the class itself so i don't need to turn every variable into a static when i call it
-        world.setContactListener(new ContactListener() {
-            @Override
-            public void beginContact(Contact c) {
+	private void initializeWorld() {
+		world = new World(new Vector2(0, -200), true);
+		// create contact listener in the class itself so i don't need to turn every variable into a static when i call it
+		world.setContactListener(new ContactListener() {
+			@Override
+			public void beginContact(Contact c) {
 
-            }
+			}
 
-            @Override
-            public void endContact(Contact c) {
-                Fixture fa = c.getFixtureA();
-                Fixture fb = c.getFixtureB();
-                // only checking if one of the fixtures is the foot sensor - if the foot sensor is one of the contacts,
-                // then the other fixture is something it's allowed to collide with (maskBit = 1)
-                if (fa.getFilterData().categoryBits == 0) {
-                    player.isGrounded = false;
-                } else if (fb.getFilterData().categoryBits == 0) {
-                    player.isGrounded = false;
-                }
-            }
+			@Override
+			public void endContact(Contact c) {
+				Fixture fa = c.getFixtureA();
+				Fixture fb = c.getFixtureB();
+				// only checking if one of the fixtures is the foot sensor - if the foot sensor is one of the contacts,
+				// then the other fixture is something it's allowed to collide with (maskBit = 1)
+				if(fa.getFilterData().categoryBits == 0) {
+					player.isGrounded = false;
+				} else if(fb.getFilterData().categoryBits == 0) {
+					player.isGrounded = false;
+				}
+			}
 
-            @Override
-            public void preSolve(Contact c, Manifold oldManifold) {
-                // i use presolve rather than beginContact because presolve runs right when the collision occurs
-                // beginContact occurs when they begin to touch, leading to loss of accuracy
-                // basically begincontact sucks
-                Fixture fa = c.getFixtureA();
-                Fixture fb = c.getFixtureB();
+			@Override
+			public void preSolve(Contact c, Manifold oldManifold) {
+				// i use presolve rather than beginContact because presolve runs right when the collision occurs
+				// beginContact occurs when they begin to touch, leading to loss of accuracy
+				// basically begincontact sucks
+				Fixture fa = c.getFixtureA();
+				Fixture fb = c.getFixtureB();
 
-                if (fa.getFilterData().categoryBits == 1) {
-                    player.isGrounded = true;
-                } else if (fb.getFilterData().categoryBits == 1) {
-                    player.isGrounded = true;
-                }
-                //http://box2d.org/manual.html#_Toc258082970 source for the way mask bits and categoryBits worked
-                if (fa.getFilterData().categoryBits==5&&fb.getFilterData().categoryBits==16){
-                    if(player.nCurHealth>0){
-                        player.nCurHealth-=1;
-                        System.out.println("***************************************************************************"+player.nCurHealth);
+				if(fa.getFilterData().categoryBits == 1) {
+					player.isGrounded = true;
+				} else if(fb.getFilterData().categoryBits == 1) {
+					player.isGrounded = true;
+				}
+				//http://box2d.org/manual.html#_Toc258082970 source for the way mask bits and categoryBits worked
+				if(fa.getFilterData().categoryBits == 5 && fb.getFilterData().categoryBits == 16) {
+					if(player.nCurHealth > 0) {
+						player.nCurHealth -= 1;
+						System.out.println("***************************************************************************" + player.nCurHealth);
 
-                    }
-                    else{
-                        System.out.println("You are dead!");
-                    }
-                }
-                else if (fb.getFilterData().categoryBits==5&&fa.getFilterData().categoryBits==16){
-                    if(player.nCurHealth>0){
-                        player.nCurHealth-=1;
-                        System.out.println("***************************************************************************"+player.nCurHealth);
+					} else {
+						System.out.println("You are dead!");
+					}
+				} else if(fb.getFilterData().categoryBits == 5 && fa.getFilterData().categoryBits == 16) {
+					if(player.nCurHealth > 0) {
+						player.nCurHealth -= 1;
+						System.out.println("***************************************************************************" + player.nCurHealth);
 
-                    }
-                    else{
-                        System.out.println("You are dead!");
-                    }
-                }
-            }
+					} else {
+						System.out.println("You are dead!");
+					}
+				}
+			}
 
-            @Override
-            public void postSolve(Contact c, ContactImpulse impulse) {
-                Fixture fa = c.getFixtureA();
-                Fixture fb = c.getFixtureB();
-            }
-        });
-        map = new Map(world, "debugroom");
-        // pass world and desired map
-    }
+			@Override
+			public void postSolve(Contact c, ContactImpulse impulse) {
+				Fixture fa = c.getFixtureA();
+				Fixture fb = c.getFixtureB();
+			}
+		});
+		map = new Map(world, "debugroom");
+		// pass world and desired map
+	}
 
-    private void initializeCamera() {
-        b2dr = new Box2DDebugRenderer();
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, 32 * (19 / 2), 32 * (10 / 2));
-        // tile size * first two digits of resolution give you a solid camera, i just divide by 2 for a better view
-        // two is a magic number
-        camera.update();
-        tiledMapRenderer = new OrthogonalTiledMapRenderer(map.getMap(), map.getUnitScale());
-        // important: go to getUnitScale function in Map
-    }
+	private void initializeCamera() {
+		b2dr = new Box2DDebugRenderer();
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false, 32 * (19 / 2), 32 * (10 / 2));
+		// tile size * first two digits of resolution give you a solid camera, i just divide by 2 for a better view
+		// two is a magic number
+		camera.update();
+		tiledMapRenderer = new OrthogonalTiledMapRenderer(map.getMap(), map.getUnitScale());
+		// important: go to getUnitScale function in Map
+	}
 
-    private void initializePlayer() {
-        player = new Player(world, map.getSpawnpoint());
-        player.nCurHealth=player.nFinHealth;
-    }
+	private void initializePlayer() {
+		player = new Player(world, map.getSpawnpoint());
+		player.nCurHealth = player.nFinHealth;
+	}
 
-    private void initializeEnemy() {
-        for(i=0;i<2;i++) {
-            arObenemy[i] = new Enemy(world, map.getEnemySpawn());
-        }
-    }
+	private void initializeEnemy() {
+		for(i = 0; i < 2; i++) {
+			arObenemy[i] = new Enemy(world, map.getEnemySpawn());
+		}
+	}
 
 
-    @Override
-    public void show() {
-        Gdx.input.setInputProcessor(this);
-    }
+	@Override
+	public void show() {
+		Gdx.input.setInputProcessor(this);
+	}
 
-    @Override
-    public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        world.step(1 / 60f, 6, 2);
-        camera.position.set(player.getPosition());
-        camera.update();
-        tiledMapRenderer.setView(camera);
-        tiledMapRenderer.render();
-        b2dr.render(world, camera.combined);
+	@Override
+	public void render(float delta) {
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		world.step(1 / 60f, 6, 2);
+		camera.position.set(player.getPosition());
+		camera.update();
+		tiledMapRenderer.setView(camera);
+		tiledMapRenderer.render();
+		b2dr.render(world, camera.combined);
 
-        batch.setProjectionMatrix(camera.combined);
-        // set the projection matrix as the camera so the tile layer on the map lines up with the bodies
-        // if this line wasn't here it wouldn't scale down
-        batch.begin();
-        player.draw(batch);
-        for(i=0;i<2;i++) {
-            arObenemy[i].draw(batch);
-        }
-        batch.end();
+		batch.setProjectionMatrix(camera.combined);
+		// set the projection matrix as the camera so the tile layer on the map lines up with the bodies
+		// if this line wasn't here it wouldn't scale down
+		batch.begin();
+		player.draw(batch);
+		for(i = 0; i < 2; i++) {
+			arObenemy[i].draw(batch);
+		}
+		batch.end();
 
-        player.move();
-        for(i=0;i<2;i++) {
-            arObenemy[i].move(player.getPosition().x);
-        }
-    }
+		player.move();
+		for(i = 0; i < 2; i++) {
+			arObenemy[i].move(player.getPosition().x);
+		}
+	}
 
-    @Override
-    public void resize(int width, int height) {
+	@Override
+	public void resize(int width, int height) {
 
-    }
+	}
 
-    @Override
-    public void pause() {
+	@Override
+	public void pause() {
 
-    }
+	}
 
-    @Override
-    public void resume() {
+	@Override
+	public void resume() {
 
-    }
+	}
 
-    @Override
-    public void hide() {
+	@Override
+	public void hide() {
 
-    }
+	}
 
-    @Override
-    public void dispose() {
+	@Override
+	public void dispose() {
 
-    }
+	}
 
 
-    @Override
-    public boolean keyDown(int keycode) {
-        if (keycode == Input.Keys.X && player.isGrounded) {
-            player.jump();
-            player.isGrounded = false;
-        }
-        return false;
-    }
+	@Override
+	public boolean keyDown(int keycode) {
+		if(keycode == Input.Keys.X && player.isGrounded) {
+			player.jump();
+			player.isGrounded = false;
+		}
+		return false;
+	}
 
-    @Override
-    public boolean keyUp(int keycode) {
-        if (keycode == com.badlogic.gdx.Input.Keys.LEFT || keycode == com.badlogic.gdx.Input.Keys.RIGHT) {
-            player.stop();
-        }
-        return false;
-    }
+	@Override
+	public boolean keyUp(int keycode) {
+		if(keycode == com.badlogic.gdx.Input.Keys.LEFT || keycode == com.badlogic.gdx.Input.Keys.RIGHT) {
+			player.stop();
+		}
+		return false;
+	}
 
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
+	@Override
+	public boolean keyTyped(char character) {
+		return false;
+	}
 
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		return false;
+	}
 
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		return false;
+	}
 
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
-    }
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		return false;
+	}
 
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		return false;
+	}
 
-    @Override
-    public boolean scrolled(int amount) {
-        return false;
-    }
+	@Override
+	public boolean scrolled(int amount) {
+		return false;
+	}
 }

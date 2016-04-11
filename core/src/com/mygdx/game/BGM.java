@@ -5,77 +5,77 @@ import com.badlogic.gdx.audio.Music;
 
 public class BGM implements Music {
 
-    // purpose of class is just to play the music defined in the .tmx file
-    // only thing to really look at is the constructor otherwise who cares
+	// purpose of class is just to play the music defined in the .tmx file
+	// only thing to really look at is the constructor otherwise who cares
 
-    Music mBGM;
+	Music mBGM;
 
-    BGM(String bgm) {
-        mBGM = Gdx.audio.newMusic(Gdx.files.internal("bgm/" + bgm + ".ogg"));
-    }
+	BGM(String bgm) {
+		mBGM = Gdx.audio.newMusic(Gdx.files.internal("bgm/" + bgm + ".ogg"));
+	}
 
-    @Override
-    public void play() {
-        mBGM.play();
-    }
+	@Override
+	public void play() {
+		mBGM.play();
+	}
 
-    @Override
-    public void pause() {
-        mBGM.pause();
-    }
+	@Override
+	public void pause() {
+		mBGM.pause();
+	}
 
-    @Override
-    public void stop() {
-        mBGM.stop();
-    }
+	@Override
+	public void stop() {
+		mBGM.stop();
+	}
 
-    @Override
-    public boolean isPlaying() {
-        return mBGM.isPlaying();
-    }
+	@Override
+	public boolean isPlaying() {
+		return mBGM.isPlaying();
+	}
 
-    @Override
-    public void setLooping(boolean isLooping) {
-        mBGM.setLooping(isLooping);
-    }
+	@Override
+	public void setLooping(boolean isLooping) {
+		mBGM.setLooping(isLooping);
+	}
 
-    @Override
-    public boolean isLooping() {
-        return mBGM.isLooping();
-    }
+	@Override
+	public boolean isLooping() {
+		return mBGM.isLooping();
+	}
 
-    @Override
-    public void setVolume(float volume) {
-        mBGM.setVolume(volume);
-    }
+	@Override
+	public void setVolume(float volume) {
+		mBGM.setVolume(volume);
+	}
 
-    @Override
-    public float getVolume() {
-        return mBGM.getVolume();
-    }
+	@Override
+	public float getVolume() {
+		return mBGM.getVolume();
+	}
 
-    @Override
-    public void setPan(float pan, float volume) {
-        mBGM.setPan(pan, volume);
-    }
+	@Override
+	public void setPan(float pan, float volume) {
+		mBGM.setPan(pan, volume);
+	}
 
-    @Override
-    public void setPosition(float position) {
-        mBGM.setPosition(position);
-    }
+	@Override
+	public void setPosition(float position) {
+		mBGM.setPosition(position);
+	}
 
-    @Override
-    public float getPosition() {
-        return mBGM.getPosition();
-    }
+	@Override
+	public float getPosition() {
+		return mBGM.getPosition();
+	}
 
-    @Override
-    public void dispose() {
-        mBGM.dispose();
-    }
+	@Override
+	public void dispose() {
+		mBGM.dispose();
+	}
 
-    @Override
-    public void setOnCompletionListener(OnCompletionListener listener) {
-        mBGM.setOnCompletionListener(listener);
-    }
+	@Override
+	public void setOnCompletionListener(OnCompletionListener listener) {
+		mBGM.setOnCompletionListener(listener);
+	}
 }
