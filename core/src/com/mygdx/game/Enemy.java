@@ -31,6 +31,10 @@ public class Enemy extends Actor {
 
     boolean bRight = true, bGrounded = false;
 
+    enum State {
+		IDLE, RIGHT, LEFT
+    }
+
     Enemy(World world, Vector2 enemyspawn) {
         this.world = world;
         createMainBody(enemyspawn);
@@ -38,7 +42,7 @@ public class Enemy extends Actor {
     }
 
     private void createMainBody(Vector2 enemyspawn) {
-        this.state = State.idle;
+        this.state = State.IDLE;
         for (int i = 1; i < 10; i++) {
             sIdle[i - 1] = new Sprite(taIdle.findRegion("idle (" + i + ")"));
             sRun[i - 1] = new Sprite(taRun.findRegion("run (" + i + ")"));
@@ -82,15 +86,15 @@ public class Enemy extends Actor {
     void draw(SpriteBatch sb) {
         // drawing sprite on player body using default library, not using animatedbox2dsprite because it doesn't loop the animation
         elapsedTime++;
-        if (this.state == State.idle) {
+        if (this.state == State.IDLE) {
             if (bRight) {
                 sb.draw(idle.getKeyFrame(elapsedTime, true), enemyMainBody.getPosition().x - sIdle[0].getWidth() / 4, enemyMainBody.getPosition().y - sIdle[0].getHeight() / 4, sIdle[0].getWidth() / 2, sIdle[0].getHeight() / 2);
             } else {
                 sb.draw(idle.getKeyFrame(elapsedTime, true), enemyMainBody.getPosition().x + sIdle[0].getWidth() / 4, enemyMainBody.getPosition().y - sIdle[0].getHeight() / 4, -sIdle[0].getWidth() / 2, sIdle[0].getHeight() / 2);
             }
-        } else if (this.state == State.right) {
+        } else if (this.state == State.RIGHT) {
             sb.draw(run.getKeyFrame(elapsedTime, true), enemyMainBody.getPosition().x - sIdle[0].getWidth() / 4, enemyMainBody.getPosition().y - sIdle[0].getHeight() / 4, sRun[0].getWidth() / 2, sRun[0].getHeight() / 2);
-        } else if (this.state == State.left) {
+        } else if (this.state == State.LEFT) {
             sb.draw(run.getKeyFrame(elapsedTime, true), enemyMainBody.getPosition().x + sIdle[0].getWidth() / 4, enemyMainBody.getPosition().y - sIdle[0].getHeight() / 4, -sRun[0].getWidth() / 2, sRun[0].getHeight() / 2);
         }
     }
@@ -101,14 +105,10 @@ public class Enemy extends Actor {
         }
         if (fPlayerX < enemyMainBody.getPosition().x) {
             enemyMainBody.setLinearVelocity(-75, enemyMainBody.getLinearVelocity().y);
-            this.state = State.left;
+            this.state = State.LEFT;
         } else if (fPlayerX > enemyMainBody.getPosition().x) {
             enemyMainBody.setLinearVelocity(70, enemyMainBody.getLinearVelocity().y);
-            this.state = State.right;
+            this.state = State.RIGHT;
         }
-    }
-
-    enum State {
-        idle, right, left
     }
 }

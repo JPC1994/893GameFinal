@@ -22,11 +22,11 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class Player extends Actor {
     State state;
-    Body mainBody, footSensor;
-    BodyDef bdefMain, bdefFoot;
+    Body mainBody;
+    BodyDef bdefMain;
     FixtureDef fdefPlayer, fdefFoot;
     PolygonShape shape;
-    TextureAtlas taIdle = new TextureAtlas(Gdx.files.internal("player/idle/idle.pack"));
+    TextureAtlas taIdle = new TextureAtlas(Gdx.files.internal("player/IDLE/IDLE.pack"));
     TextureAtlas taRun = new TextureAtlas(Gdx.files.internal("player/run/run.pack"));
     Sprite[] sIdle = new Sprite[9];
     Sprite[] sRun = new Sprite[9];
@@ -39,7 +39,7 @@ public class Player extends Actor {
     boolean bRight = true;
 
     enum State {
-        idle, left, right
+        IDLE, LEFT, RIGHT
         // enumeration for animations
     }
 
@@ -50,9 +50,9 @@ public class Player extends Actor {
     }
 
     private void createMainBody(Vector2 spawnpoint) {
-        this.state = state.idle;
+        this.state = State.IDLE;
         for (int i = 1; i < 10; i++) {
-            sIdle[i - 1] = new Sprite(taIdle.findRegion("idle (" + i + ")"));
+            sIdle[i - 1] = new Sprite(taIdle.findRegion("IDLE (" + i + ")"));
             sRun[i - 1] = new Sprite(taRun.findRegion("run (" + i + ")"));
         }
         idle = new Animation(10, sIdle);
@@ -96,15 +96,15 @@ public class Player extends Actor {
     void draw(SpriteBatch sb) {
         // drawing sprite on player body using default library, not using animatedbox2dsprite because it doesn't loop the animation
         elapsedTime++;
-        if (this.state == state.idle) {
+        if (this.state == State.IDLE) {
             if (bRight) {
                 sb.draw(idle.getKeyFrame(elapsedTime, true), mainBody.getPosition().x - sIdle[0].getWidth() / 4, mainBody.getPosition().y - sIdle[0].getHeight() / 4, sIdle[0].getWidth() / 2, sIdle[0].getHeight() / 2);
             } else {
                 sb.draw(idle.getKeyFrame(elapsedTime, true), mainBody.getPosition().x + sIdle[0].getWidth() / 4, mainBody.getPosition().y - sIdle[0].getHeight() / 4, -sIdle[0].getWidth() / 2, sIdle[0].getHeight() / 2);
             }
-        } else if (this.state == state.right) {
+        } else if (state == State.RIGHT) {
             sb.draw(run.getKeyFrame(elapsedTime, true), mainBody.getPosition().x - sIdle[0].getWidth() / 4, mainBody.getPosition().y - sIdle[0].getHeight() / 4, sRun[0].getWidth() / 2, sRun[0].getHeight() / 2);
-        } else if (this.state == state.left) {
+        } else if (state == State.LEFT) {
             sb.draw(run.getKeyFrame(elapsedTime, true), mainBody.getPosition().x + sIdle[0].getWidth() / 4, mainBody.getPosition().y - sIdle[0].getHeight() / 4, -sRun[0].getWidth() / 2, sRun[0].getHeight() / 2);
         }
     }
@@ -118,12 +118,12 @@ public class Player extends Actor {
             mainBody.getLinearVelocity().x++;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            this.state = state.left;
+            this.state = State.LEFT;
             bRight = false;
             //mainBody.applyForceToCenter(-200, 0, true);
             mainBody.setLinearVelocity(-100, mainBody.getLinearVelocity().y);
         } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            this.state = state.right;
+            this.state = State.RIGHT;
             bRight = true;
             //mainBody.applyForceToCenter(200, 0, true);
             mainBody.setLinearVelocity(100, mainBody.getLinearVelocity().y);
@@ -132,7 +132,7 @@ public class Player extends Actor {
 
     void stop() {
         // stop movement on release of keycode
-        this.state = state.idle;
+        this.state = State.IDLE;
         mainBody.setLinearVelocity(0, mainBody.getLinearVelocity().y);
     }
 
