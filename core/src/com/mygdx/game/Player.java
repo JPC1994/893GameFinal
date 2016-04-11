@@ -26,7 +26,7 @@ public class Player extends Actor {
 	BodyDef bdefMain;
 	FixtureDef fdefPlayer, fdefFoot;
 	PolygonShape shape;
-	TextureAtlas taIdle = new TextureAtlas(Gdx.files.internal("player/IDLE/IDLE.pack"));
+	TextureAtlas taIdle = new TextureAtlas(Gdx.files.internal("player/idle/idle.pack"));
 	TextureAtlas taRun = new TextureAtlas(Gdx.files.internal("player/run/run.pack"));
 	Sprite[] sIdle = new Sprite[9];
 	Sprite[] sRun = new Sprite[9];
