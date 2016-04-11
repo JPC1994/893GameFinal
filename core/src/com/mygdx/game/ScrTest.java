@@ -50,35 +50,18 @@ public class ScrTest implements Screen, InputProcessor {
 		world.setContactListener(new ContactListener() {
 			@Override
 			public void beginContact(Contact c) {
-
-			}
-
-			@Override
-			public void endContact(Contact c) {
-				Fixture fa = c.getFixtureA();
-				Fixture fb = c.getFixtureB();
-				// only checking if one of the fixtures is the foot sensor - if the foot sensor is one of the contacts,
-				// then the other fixture is something it's allowed to collide with (maskBit = 1)
-				if(fa.getFilterData().categoryBits == 0) {
-					player.isGrounded = false;
-				} else if(fb.getFilterData().categoryBits == 0) {
-					player.isGrounded = false;
-				}
-			}
-
-			@Override
-			public void preSolve(Contact c, Manifold oldManifold) {
-				// i use presolve rather than beginContact because presolve runs right when the collision occurs
-				// beginContact occurs when they begin to touch, leading to loss of accuracy
-				// basically begincontact sucks
 				Fixture fa = c.getFixtureA();
 				Fixture fb = c.getFixtureB();
 
-				if(fa.getFilterData().categoryBits == 1) {
+				if(fa.isSensor() && fb.isSensor())
+					return; // Who cares about that?
+
+				if(fa == player.footSensor)
 					player.isGrounded = true;
-				} else if(fb.getFilterData().categoryBits == 1) {
+
+				else if(fb == player.footSensor)
 					player.isGrounded = true;
-				}
+
 				//http://box2d.org/manual.html#_Toc258082970 source for the way mask bits and categoryBits worked
 				if(fa.getFilterData().categoryBits == 5 && fb.getFilterData().categoryBits == 16) {
 					if(player.nCurHealth > 0) {
@@ -100,9 +83,29 @@ public class ScrTest implements Screen, InputProcessor {
 			}
 
 			@Override
-			public void postSolve(Contact c, ContactImpulse impulse) {
+			public void endContact(Contact c) {
 				Fixture fa = c.getFixtureA();
 				Fixture fb = c.getFixtureB();
+				// only checking if one of the fixtures is the foot sensor - if the foot sensor is one of the contacts,
+				// then the other fixture is something it's allowed to collide with (maskBit = 1)
+				if(fa.isSensor() && fb.isSensor())
+					return; // Who cares about that?
+
+				if(fa == player.footSensor)
+					player.isGrounded = false;
+
+				else if(fb == player.footSensor)
+					player.isGrounded = false;
+			}
+
+			@Override
+			public void preSolve(Contact c, Manifold oldManifold) {
+
+			}
+
+			@Override
+			public void postSolve(Contact c, ContactImpulse impulse) {
+
 			}
 		});
 		map = new Map(world, "debugroom");
