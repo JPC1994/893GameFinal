@@ -17,10 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 */
 public class Enemy extends Actor {
 	Body enemyMainBody;
-	BodyDef bDefEnemyMain;
 	State state;
-	FixtureDef fdefEnemy, fdefFoot;
-	PolygonShape shape;
 	World world;
 	TextureAtlas taIdle = new TextureAtlas(Gdx.files.internal("player/idle/idle.pack"));
 	TextureAtlas taRun = new TextureAtlas(Gdx.files.internal("player/run/run.pack"));
@@ -49,8 +46,8 @@ public class Enemy extends Actor {
 		}
 		idle = new Animation(10, sIdle);
 		run = new Animation(5, sRun);
-		bDefEnemyMain = new BodyDef();
-		shape = new PolygonShape();
+		BodyDef bDefEnemyMain = new BodyDef();
+		PolygonShape shape = new PolygonShape();
 
 		bDefEnemyMain.position.set(new Vector2(enemyspawn.x / 2, enemyspawn.y / 2));
 		bDefEnemyMain.type = BodyDef.BodyType.DynamicBody;
@@ -58,11 +55,11 @@ public class Enemy extends Actor {
 		enemyMainBody.setFixedRotation(true);
 
 		shape.setAsBox(sIdle[0].getWidth() / 4, sIdle[0].getHeight() / 4);
-		fdefEnemy = new FixtureDef();
+		FixtureDef fdefEnemy = new FixtureDef();
 		fdefEnemy.shape = shape;
 		fdefEnemy.filter.categoryBits = 5;
 		//http://box2d.org/manual.html#_Toc258082970 to set maskbits such that enemies don't collide with each other
-		fdefEnemy.filter.maskBits = 16;
+		//fdefEnemy.filter.maskBits = 16; // This causes enemies to fall through the floor
 		fdefEnemy.friction = 1;
 		enemyMainBody.setSleepingAllowed(false);
 		enemyMainBody.createFixture(fdefEnemy);
@@ -71,14 +68,14 @@ public class Enemy extends Actor {
 	}
 
 	private void createFootSensor() {
-		shape = new PolygonShape();
+		PolygonShape shape = new PolygonShape();
 
 		shape.setAsBox(sIdle[0].getWidth() / 4, 0.2f, new Vector2(enemyMainBody.getWorldCenter().x / 4 - sIdle[0].getWidth() - 22f, enemyMainBody.getPosition().y / 4 - sIdle[0].getHeight() - 38f), 0);
-		fdefFoot = new FixtureDef();
-		fdefFoot.shape = shape;
-		fdefFoot.filter.categoryBits = 1;
+		FixtureDef fdefFootSensor = new FixtureDef();
+		fdefFootSensor.shape = shape;
+		fdefFootSensor.isSensor = true;
 
-		enemyMainBody.createFixture(fdefFoot);
+		enemyMainBody.createFixture(fdefFootSensor);
 		shape.dispose();
 		// create a foot sensor to detect whether or not the player is grounded
 	}
