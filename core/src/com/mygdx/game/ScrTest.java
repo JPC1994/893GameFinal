@@ -31,12 +31,14 @@ public class ScrTest implements Screen, InputProcessor {
 	TiledMapRenderer tiledMapRenderer;
 	Player player;
 	//used array of sprites concept from the drop project at: https://github.com/Mrgfhci/Drop/blob/master/core/src/com/mygdx/drop/Drop.java line 58
-	Enemy[] arObenemy = new Enemy[2];
-	SpriteBatch batch = new SpriteBatch();
-	int i;
+	Enemy[] arObenemy; // TODO: Name?
+	SpriteBatch batch;
 
 	ScrTest(Game game) {
 		this.game = game;
+
+		arObenemy = new Enemy[2];
+		batch = new SpriteBatch();
 
 		initializeWorld();
 		initializeCamera();
@@ -50,29 +52,30 @@ public class ScrTest implements Screen, InputProcessor {
 		world.setContactListener(new ContactListener() {
 			@Override
 			public void beginContact(Contact c) {
+				// Unlike presolve, beginContact is called for sensor. If you want to move the
+				// other hit detection code to presolve, go ahead, just leave the sensor code
 				Fixture fa = c.getFixtureA();
 				Fixture fb = c.getFixtureB();
 
-				if(fa.isSensor() && fb.isSensor())
+				if (fa.isSensor() && fb.isSensor())
 					return; // Who cares about that?
 
-				if(fa == player.footSensor)
+				if (fa == player.footSensor)
 					player.isGrounded = true;
 
-				else if(fb == player.footSensor)
+				else if (fb == player.footSensor)
 					player.isGrounded = true;
 
 				//http://box2d.org/manual.html#_Toc258082970 source for the way mask bits and categoryBits worked
-				if(fa.getFilterData().categoryBits == 5 && fb.getFilterData().categoryBits == 16) {
-					if(player.nCurHealth > 0) {
+				if (fa.getFilterData().categoryBits == 5 && fb.getFilterData().categoryBits == 16) {
+					if (player.nCurHealth > 0) {
 						player.nCurHealth -= 1;
 						System.out.println("***************************************************************************" + player.nCurHealth);
-
 					} else {
 						System.out.println("You are dead!");
 					}
-				} else if(fb.getFilterData().categoryBits == 5 && fa.getFilterData().categoryBits == 16) {
-					if(player.nCurHealth > 0) {
+				} else if (fb.getFilterData().categoryBits == 5 && fa.getFilterData().categoryBits == 16) {
+					if (player.nCurHealth > 0) {
 						player.nCurHealth -= 1;
 						System.out.println("***************************************************************************" + player.nCurHealth);
 
@@ -88,13 +91,13 @@ public class ScrTest implements Screen, InputProcessor {
 				Fixture fb = c.getFixtureB();
 				// only checking if one of the fixtures is the foot sensor - if the foot sensor is one of the contacts,
 				// then the other fixture is something it's allowed to collide with (maskBit = 1)
-				if(fa.isSensor() && fb.isSensor())
+				if (fa.isSensor() && fb.isSensor())
 					return; // Who cares about that?
 
-				if(fa == player.footSensor)
+				if (fa == player.footSensor)
 					player.isGrounded = false;
 
-				else if(fb == player.footSensor)
+				else if (fb == player.footSensor)
 					player.isGrounded = false;
 			}
 
@@ -129,7 +132,7 @@ public class ScrTest implements Screen, InputProcessor {
 	}
 
 	private void initializeEnemy() {
-		for(i = 0; i < 2; i++) {
+		for (int i = 0; i < 2; i++) {
 			arObenemy[i] = new Enemy(world, map.getEnemySpawn());
 		}
 	}
@@ -156,13 +159,13 @@ public class ScrTest implements Screen, InputProcessor {
 		// if this line wasn't here it wouldn't scale down
 		batch.begin();
 		player.draw(batch);
-		for(i = 0; i < 2; i++) {
+		for (int i = 0; i < 2; i++) {
 			arObenemy[i].draw(batch);
 		}
 		batch.end();
 
 		player.move();
-		for(i = 0; i < 2; i++) {
+		for (int i = 0; i < 2; i++) {
 			arObenemy[i].move(player.getPosition().x);
 		}
 	}
@@ -195,7 +198,7 @@ public class ScrTest implements Screen, InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
-		if(keycode == Input.Keys.X && player.isGrounded) {
+		if (keycode == Input.Keys.X && player.isGrounded) {
 			player.jump();
 			player.isGrounded = false;
 		}
@@ -204,7 +207,7 @@ public class ScrTest implements Screen, InputProcessor {
 
 	@Override
 	public boolean keyUp(int keycode) {
-		if(keycode == com.badlogic.gdx.Input.Keys.LEFT || keycode == com.badlogic.gdx.Input.Keys.RIGHT) {
+		if (keycode == com.badlogic.gdx.Input.Keys.LEFT || keycode == com.badlogic.gdx.Input.Keys.RIGHT) {
 			player.stop();
 		}
 		return false;

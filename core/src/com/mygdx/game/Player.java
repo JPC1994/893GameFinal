@@ -49,7 +49,7 @@ public class Player extends Actor {
 	}
 
 	private void createMainBody(Vector2 spawnpoint) {
-		this.state = State.IDLE;
+		state = State.IDLE;
 		for(int i = 1; i < 10; i++) {
 			sIdle[i - 1] = new Sprite(taIdle.findRegion("idle (" + i + ")"));
 			sRun[i - 1] = new Sprite(taRun.findRegion("run (" + i + ")"));
@@ -77,7 +77,9 @@ public class Player extends Actor {
 	private void createFootSensor() {
 		PolygonShape shape = new PolygonShape();
 
-		shape.setAsBox(sIdle[0].getWidth() / 4, 0.2f, new Vector2(body.getWorldCenter().x / 4 - sIdle[0].getWidth() / 4 + 0.5f, body.getPosition().y / 4 - sIdle[0].getHeight() - 9.5f), 0);
+		//shape.setAsBox(sIdle[0].getWidth() / 4, 0.2f, new Vector2(body.getWorldCenter().x / 4 - sIdle[0].getWidth() / 4 + 0.5f, body.getPosition().y / 4 - sIdle[0].getHeight() - 9.5f), 0);
+		shape.setAsBox(sIdle[0].getWidth() / 8, 0.2f, new Vector2(body.getWorldCenter().x / 4 - sIdle[0].getWidth() / 4 + 0.5f, body.getPosition().y / 4 - sIdle[0].getHeight() - 9.5f), 0);
+
 		FixtureDef fdefFootSensor = new FixtureDef();
 		fdefFootSensor.shape = shape;
 		fdefFootSensor.isSensor = true;
