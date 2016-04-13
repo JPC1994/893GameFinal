@@ -23,7 +23,7 @@ public class Enemy extends Actor {
 	TextureAtlas taRun = new TextureAtlas(Gdx.files.internal("player/run/run.pack"));
 	Sprite[] sIdle = new Sprite[9];
 	Sprite[] sRun = new Sprite[9];
-	Animation idle, run;
+	Animation aniIdle, aniRun;
 	float elapsedTime = 0;
 
 	boolean bRight = true, bGrounded = false;
@@ -44,8 +44,8 @@ public class Enemy extends Actor {
 			sIdle[i - 1] = new Sprite(taIdle.findRegion("idle (" + i + ")"));
 			sRun[i - 1] = new Sprite(taRun.findRegion("run (" + i + ")"));
 		}
-		idle = new Animation(10, sIdle);
-		run = new Animation(5, sRun);
+		aniIdle = new Animation(10, sIdle);
+		aniRun = new Animation(5, sRun);
 		BodyDef bDefEnemyMain = new BodyDef();
 		PolygonShape shape = new PolygonShape();
 
@@ -85,14 +85,14 @@ public class Enemy extends Actor {
 		elapsedTime++;
 		if(this.state == State.IDLE) {
 			if(bRight) {
-				sb.draw(idle.getKeyFrame(elapsedTime, true), enemyMainBody.getPosition().x - sIdle[0].getWidth() / 4, enemyMainBody.getPosition().y - sIdle[0].getHeight() / 4, sIdle[0].getWidth() / 2, sIdle[0].getHeight() / 2);
+				sb.draw(aniIdle.getKeyFrame(elapsedTime, true), enemyMainBody.getPosition().x - sIdle[0].getWidth() / 4, enemyMainBody.getPosition().y - sIdle[0].getHeight() / 4, sIdle[0].getWidth() / 2, sIdle[0].getHeight() / 2);
 			} else {
-				sb.draw(idle.getKeyFrame(elapsedTime, true), enemyMainBody.getPosition().x + sIdle[0].getWidth() / 4, enemyMainBody.getPosition().y - sIdle[0].getHeight() / 4, -sIdle[0].getWidth() / 2, sIdle[0].getHeight() / 2);
+				sb.draw(aniIdle.getKeyFrame(elapsedTime, true), enemyMainBody.getPosition().x + sIdle[0].getWidth() / 4, enemyMainBody.getPosition().y - sIdle[0].getHeight() / 4, -sIdle[0].getWidth() / 2, sIdle[0].getHeight() / 2);
 			}
 		} else if(this.state == State.RIGHT) {
-			sb.draw(run.getKeyFrame(elapsedTime, true), enemyMainBody.getPosition().x - sIdle[0].getWidth() / 4, enemyMainBody.getPosition().y - sIdle[0].getHeight() / 4, sRun[0].getWidth() / 2, sRun[0].getHeight() / 2);
+			sb.draw(aniRun.getKeyFrame(elapsedTime, true), enemyMainBody.getPosition().x - sIdle[0].getWidth() / 4, enemyMainBody.getPosition().y - sIdle[0].getHeight() / 4, sRun[0].getWidth() / 2, sRun[0].getHeight() / 2);
 		} else if(this.state == State.LEFT) {
-			sb.draw(run.getKeyFrame(elapsedTime, true), enemyMainBody.getPosition().x + sIdle[0].getWidth() / 4, enemyMainBody.getPosition().y - sIdle[0].getHeight() / 4, -sRun[0].getWidth() / 2, sRun[0].getHeight() / 2);
+			sb.draw(aniRun.getKeyFrame(elapsedTime, true), enemyMainBody.getPosition().x + sIdle[0].getWidth() / 4, enemyMainBody.getPosition().y - sIdle[0].getHeight() / 4, -sRun[0].getWidth() / 2, sRun[0].getHeight() / 2);
 		}
 	}
 

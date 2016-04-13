@@ -8,74 +8,74 @@ public class BGM implements Music {
 	// purpose of class is just to play the music defined in the .tmx file
 	// only thing to really look at is the constructor otherwise who cares
 
-	Music mBGM;
+	Music music;
 
 	BGM(String bgm) {
-		mBGM = Gdx.audio.newMusic(Gdx.files.internal("bgm/" + bgm + ".ogg"));
+		music = Gdx.audio.newMusic(Gdx.files.internal("bgm/" + bgm + ".ogg"));
 	}
 
 	@Override
 	public void play() {
-		mBGM.play();
+		music.play();
 	}
 
 	@Override
 	public void pause() {
-		mBGM.pause();
+		music.pause();
 	}
 
 	@Override
 	public void stop() {
-		mBGM.stop();
+		music.stop();
 	}
 
 	@Override
 	public boolean isPlaying() {
-		return mBGM.isPlaying();
+		return music.isPlaying();
 	}
 
 	@Override
 	public void setLooping(boolean isLooping) {
-		mBGM.setLooping(isLooping);
+		music.setLooping(isLooping);
 	}
 
 	@Override
 	public boolean isLooping() {
-		return mBGM.isLooping();
+		return music.isLooping();
 	}
 
 	@Override
 	public void setVolume(float volume) {
-		mBGM.setVolume(volume);
+		music.setVolume(volume);
 	}
 
 	@Override
 	public float getVolume() {
-		return mBGM.getVolume();
+		return music.getVolume();
 	}
 
 	@Override
 	public void setPan(float pan, float volume) {
-		mBGM.setPan(pan, volume);
+		music.setPan(pan, volume);
 	}
 
 	@Override
 	public void setPosition(float position) {
-		mBGM.setPosition(position);
+		music.setPosition(position);
 	}
 
 	@Override
 	public float getPosition() {
-		return mBGM.getPosition();
+		return music.getPosition();
 	}
 
 	@Override
 	public void dispose() {
-		mBGM.dispose();
+		music.dispose();
 	}
 
 	@Override
 	public void setOnCompletionListener(OnCompletionListener listener) {
-		mBGM.setOnCompletionListener(listener);
+		music.setOnCompletionListener(listener);
 	}
 }

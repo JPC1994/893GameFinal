@@ -29,7 +29,7 @@ public class Player extends Actor {
 	TextureAtlas taRun = new TextureAtlas(Gdx.files.internal("player/run/run.pack"));
 	Sprite[] sIdle = new Sprite[9];
 	Sprite[] sRun = new Sprite[9];
-	Animation idle, run;
+	Animation aniIdle, aniRun;
 	float elapsedTime = 0;
 	World world;
 	final int nFinHealth = 3;
@@ -54,8 +54,8 @@ public class Player extends Actor {
 			sIdle[i - 1] = new Sprite(taIdle.findRegion("idle (" + i + ")"));
 			sRun[i - 1] = new Sprite(taRun.findRegion("run (" + i + ")"));
 		}
-		idle = new Animation(10, sIdle);
-		run = new Animation(5, sRun);
+		aniIdle = new Animation(10, sIdle);
+		aniRun = new Animation(5, sRun);
 		BodyDef bodyDef = new BodyDef();
 		PolygonShape shape = new PolygonShape();
 
@@ -93,36 +93,36 @@ public class Player extends Actor {
 		return new Vector3(body.getPosition().x, body.getPosition().y, 0);
 	}
 
-	void draw(SpriteBatch sb) {
+	void draw(SpriteBatch spriteBatch) {
 		// drawing sprite on player body using default library, not using animatedbox2dsprite because it doesn't loop the animation
 		elapsedTime++;
 		if(this.state == State.IDLE) {
 			if(bRight) {
-				sb.draw(idle.getKeyFrame(elapsedTime, true), body.getPosition().x - sIdle[0].getWidth() / 4, body.getPosition().y - sIdle[0].getHeight() / 4, sIdle[0].getWidth() / 2, sIdle[0].getHeight() / 2);
+				spriteBatch.draw(aniIdle.getKeyFrame(elapsedTime, true), body.getPosition().x - sIdle[0].getWidth() / 4, body.getPosition().y - sIdle[0].getHeight() / 4, sIdle[0].getWidth() / 2, sIdle[0].getHeight() / 2);
 			} else {
-				sb.draw(idle.getKeyFrame(elapsedTime, true), body.getPosition().x + sIdle[0].getWidth() / 4, body.getPosition().y - sIdle[0].getHeight() / 4, -sIdle[0].getWidth() / 2, sIdle[0].getHeight() / 2);
+				spriteBatch.draw(aniIdle.getKeyFrame(elapsedTime, true), body.getPosition().x + sIdle[0].getWidth() / 4, body.getPosition().y - sIdle[0].getHeight() / 4, -sIdle[0].getWidth() / 2, sIdle[0].getHeight() / 2);
 			}
 		} else if(state == State.RIGHT) {
-			sb.draw(run.getKeyFrame(elapsedTime, true), body.getPosition().x - sIdle[0].getWidth() / 4, body.getPosition().y - sIdle[0].getHeight() / 4, sRun[0].getWidth() / 2, sRun[0].getHeight() / 2);
+			spriteBatch.draw(aniRun.getKeyFrame(elapsedTime, true), body.getPosition().x - sIdle[0].getWidth() / 4, body.getPosition().y - sIdle[0].getHeight() / 4, sRun[0].getWidth() / 2, sRun[0].getHeight() / 2);
 		} else if(state == State.LEFT) {
-			sb.draw(run.getKeyFrame(elapsedTime, true), body.getPosition().x + sIdle[0].getWidth() / 4, body.getPosition().y - sIdle[0].getHeight() / 4, -sRun[0].getWidth() / 2, sRun[0].getHeight() / 2);
+			spriteBatch.draw(aniRun.getKeyFrame(elapsedTime, true), body.getPosition().x + sIdle[0].getWidth() / 4, body.getPosition().y - sIdle[0].getHeight() / 4, -sRun[0].getWidth() / 2, sRun[0].getHeight() / 2);
 		}
 	}
 
 	void move() {
 		if(Gdx.input.isTouched()) {
-			int height = Gdx.graphics.getHeight();
-			int width = Gdx.graphics.getWidth();
+			int screenHeight = Gdx.graphics.getHeight();
+			int screenWidth = Gdx.graphics.getWidth();
 			int touchX = Gdx.input.getX();
 			int touchY = Gdx.input.getY(); // Don't get near this guy ;}
 
-			if(touchX > width - (width / 3f) && touchY > height - (height / 3f)) { // Bottom right
+			if(touchX > screenWidth - (screenWidth / 3) && touchY > screenHeight - (screenHeight / 3f)) { // Bottom right
 				body.setLinearVelocity(100f, body.getLinearVelocity().y);
 				state = State.RIGHT;
-			} else if(touchX < (width / 3f) && touchY > height - (height / 3f)) { // Bottom left
+			} else if(touchX < (screenWidth / 3f) && touchY > screenHeight - (screenHeight / 3f)) { // Bottom left
 				body.setLinearVelocity(-100f, body.getLinearVelocity().y);
 				state = State.LEFT;
-			} else if(isGrounded && touchY > height - (height / 3)) { // Bottom middle
+			} else if(isGrounded && touchY > screenHeight - (screenHeight / 3)) { // Bottom middle
 				jump();
 			}
 		} else {

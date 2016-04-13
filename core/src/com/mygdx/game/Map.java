@@ -14,19 +14,19 @@ import net.dermetfan.gdx.physics.box2d.Box2DMapObjectParser;
  */
 public class Map {
 
-	Box2DMapObjectParser b2dmop;
+	Box2DMapObjectParser mapObjectParser;
 	String mapName;
 	BGM bgm;
 
 	Map(World world, String mapName) {
 		this.mapName = mapName;
-		b2dmop = new Box2DMapObjectParser();
-		b2dmop.load(world, new TmxMapLoader().load("maps/" + mapName + ".tmx"));
+		mapObjectParser = new Box2DMapObjectParser();
+		mapObjectParser.load(world, new TmxMapLoader().load("maps/" + mapName + ".tmx"));
 		// body that always exists is "level", which wraps the whole map
-		b2dmop.getBodies();
+		mapObjectParser.getBodies();
 		// fixtures is everything else, used so i can define filters
-		b2dmop.getFixtures();
-		b2dmop.getJoints();
+		mapObjectParser.getFixtures();
+		mapObjectParser.getJoints();
 		// everything involving music below
 		bgm = new BGM(getBGM());
 		bgm.setLooping(true);
@@ -40,12 +40,12 @@ public class Map {
 	}
 
 	public float getUnitScale() {
-		b2dmop.setUnitScale(0.5f);
+		mapObjectParser.setUnitScale(0.5f);
 		// IMPORTANT!!!
-		// b2dmop's UnitScale is set to a half because of the way box2d works.
+		// mapObjectParser's UnitScale is set to a half because of the way box2d works.
 		// box2d uses meters, and there is a cap on velocity. i scale everything down so i don't
 		// get stuck on the velocity cap and have to apply over 100 000 in a forcetocenter for a basic jump
-		return b2dmop.getUnitScale();
+		return mapObjectParser.getUnitScale();
 	}
 
 	public String getBGM() {

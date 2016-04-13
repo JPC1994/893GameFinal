@@ -27,18 +27,18 @@ public class ScrTest implements Screen, InputProcessor {
 	World world;
 	Map map;
 	OrthographicCamera camera;
-	Box2DDebugRenderer b2dr;
+	Box2DDebugRenderer debugRenderer;
 	TiledMapRenderer tiledMapRenderer;
 	Player player;
 	//used array of sprites concept from the drop project at: https://github.com/Mrgfhci/Drop/blob/master/core/src/com/mygdx/drop/Drop.java line 58
-	Enemy[] arObenemy; // TODO: Name?
-	SpriteBatch batch;
+	Enemy[] arEnemies; // TODO: Name?
+	SpriteBatch spriteBatch;
 
 	ScrTest(Game game) {
 		this.game = game;
 
-		arObenemy = new Enemy[2];
-		batch = new SpriteBatch();
+		arEnemies = new Enemy[2];
+		spriteBatch = new SpriteBatch();
 
 		initializeWorld();
 		initializeCamera();
@@ -116,7 +116,7 @@ public class ScrTest implements Screen, InputProcessor {
 	}
 
 	private void initializeCamera() {
-		b2dr = new Box2DDebugRenderer();
+		debugRenderer = new Box2DDebugRenderer();
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 32 * (19 / 2), 32 * (10 / 2));
 		// tile size * first two digits of resolution give you a solid camera, i just divide by 2 for a better view
@@ -133,7 +133,7 @@ public class ScrTest implements Screen, InputProcessor {
 
 	private void initializeEnemy() {
 		for (int i = 0; i < 2; i++) {
-			arObenemy[i] = new Enemy(world, map.getEnemySpawn());
+			arEnemies[i] = new Enemy(world, map.getEnemySpawn());
 		}
 	}
 
@@ -152,21 +152,21 @@ public class ScrTest implements Screen, InputProcessor {
 		camera.update();
 		tiledMapRenderer.setView(camera);
 		tiledMapRenderer.render();
-		b2dr.render(world, camera.combined);
+		debugRenderer.render(world, camera.combined);
 
-		batch.setProjectionMatrix(camera.combined);
+		spriteBatch.setProjectionMatrix(camera.combined);
 		// set the projection matrix as the camera so the tile layer on the map lines up with the bodies
 		// if this line wasn't here it wouldn't scale down
-		batch.begin();
-		player.draw(batch);
+		spriteBatch.begin();
+		player.draw(spriteBatch);
 		for (int i = 0; i < 2; i++) {
-			arObenemy[i].draw(batch);
+			arEnemies[i].draw(spriteBatch);
 		}
-		batch.end();
+		spriteBatch.end();
 
 		player.move();
 		for (int i = 0; i < 2; i++) {
-			arObenemy[i].move(player.getPosition().x);
+			arEnemies[i].move(player.getPosition().x);
 		}
 	}
 
