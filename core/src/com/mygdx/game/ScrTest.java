@@ -51,30 +51,30 @@ public class ScrTest implements Screen, InputProcessor {
 		// create contact listener in the class itself so i don't need to turn every variable into a static when i call it
 		world.setContactListener(new ContactListener() {
 			@Override
-			public void beginContact(Contact c) {
+			public void beginContact(Contact contact) {
 				// Unlike presolve, beginContact is called for sensor. If you want to move the
 				// other hit detection code to presolve, go ahead, just leave the sensor code
-				Fixture fa = c.getFixtureA();
-				Fixture fb = c.getFixtureB();
+				Fixture fixtureA = contact.getFixtureA();
+				Fixture fixtureB = contact.getFixtureB();
 
-				if (fa.isSensor() && fb.isSensor())
+				if (fixtureA.isSensor() && fixtureB.isSensor())
 					return; // Who cares about that?
 
-				if (fa == player.footSensor)
+				if (fixtureA == player.footSensor)
 					player.isGrounded = true;
 
-				else if (fb == player.footSensor)
+				else if (fixtureB == player.footSensor)
 					player.isGrounded = true;
 
 				//http://box2d.org/manual.html#_Toc258082970 source for the way mask bits and categoryBits worked
-				if (fa.getFilterData().categoryBits == 5 && fb.getFilterData().categoryBits == 16) {
+				if (fixtureA.getFilterData().categoryBits == 5 && fixtureB.getFilterData().categoryBits == 16) {
 					if (player.nCurHealth > 0) {
 						player.nCurHealth -= 1;
 						System.out.println("***************************************************************************" + player.nCurHealth);
 					} else {
 						System.out.println("You are dead!");
 					}
-				} else if (fb.getFilterData().categoryBits == 5 && fa.getFilterData().categoryBits == 16) {
+				} else if (fixtureB.getFilterData().categoryBits == 5 && fixtureA.getFilterData().categoryBits == 16) {
 					if (player.nCurHealth > 0) {
 						player.nCurHealth -= 1;
 						System.out.println("***************************************************************************" + player.nCurHealth);
@@ -86,28 +86,28 @@ public class ScrTest implements Screen, InputProcessor {
 			}
 
 			@Override
-			public void endContact(Contact c) {
-				Fixture fa = c.getFixtureA();
-				Fixture fb = c.getFixtureB();
+			public void endContact(Contact contact) {
+				Fixture fixtureA = contact.getFixtureA();
+				Fixture fixtureB = contact.getFixtureB();
 				// only checking if one of the fixtures is the foot sensor - if the foot sensor is one of the contacts,
 				// then the other fixture is something it's allowed to collide with (maskBit = 1)
-				if (fa.isSensor() && fb.isSensor())
+				if (fixtureA.isSensor() && fixtureB.isSensor())
 					return; // Who cares about that?
 
-				if (fa == player.footSensor)
+				if (fixtureA == player.footSensor)
 					player.isGrounded = false;
 
-				else if (fb == player.footSensor)
+				else if (fixtureB == player.footSensor)
 					player.isGrounded = false;
 			}
 
 			@Override
-			public void preSolve(Contact c, Manifold oldManifold) {
+			public void preSolve(Contact contact, Manifold oldManifold) {
 
 			}
 
 			@Override
-			public void postSolve(Contact c, ContactImpulse impulse) {
+			public void postSolve(Contact contact, ContactImpulse impulse) {
 
 			}
 		});
