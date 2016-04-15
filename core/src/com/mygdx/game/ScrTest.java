@@ -30,8 +30,7 @@ public class ScrTest implements Screen, InputProcessor {
 	Box2DDebugRenderer debugRenderer;
 	TiledMapRenderer tiledMapRenderer;
 	Player player;
-	//used array of sprites concept from the drop project at: https://github.com/Mrgfhci/Drop/blob/master/core/src/com/mygdx/drop/Drop.java line 58
-	Enemy[] arEnemies; // TODO: Name?
+	Enemy[] arEnemies;
 	SpriteBatch spriteBatch;
 
 	ScrTest(Game game) {
@@ -66,27 +65,21 @@ public class ScrTest implements Screen, InputProcessor {
 				else if (fixtureB == player.footSensor)
 					player.isGrounded = true;
 
-				//http://box2d.org/manual.html#_Toc258082970 source for the way mask bits and categoryBits worked
-				if (fixtureA.getFilterData().categoryBits == 5 && fixtureB.getFilterData().categoryBits == 16) {
-					if (player.nCurHealth > 0) {
-						player.nCurHealth -= 1;
-						System.out.println("***************************************************************************" + player.nCurHealth);
-					} else {
-						System.out.println("You are dead!");
-					}
-				} else if (fixtureB.getFilterData().categoryBits == 5 && fixtureA.getFilterData().categoryBits == 16) {
-					if (player.nCurHealth > 0) {
-						player.nCurHealth -= 1;
-						System.out.println("***************************************************************************" + player.nCurHealth);
 
+				if (fixtureA.getFilterData().categoryBits == 5 && fixtureB.getFilterData().categoryBits == 16
+						|| fixtureA.getFilterData().categoryBits == 16 && fixtureB.getFilterData().categoryBits == 5) {
+					//http://box2d.org/manual.html#_Toc258082970 source for the way mask bits and categoryBits worked
+					//if (fixtureA.getFilterData().categoryBits == 5 && fixtureB.getFilterData().categoryBits == 16) {
+					if (player.nCurHealth > 0) {
+						player.nCurHealth -= 1;
+						System.out.println("***************************************************************************" + player.nCurHealth);
 					} else {
 						System.out.println("You are dead!");
 					}
 				}
 			}
-
 			@Override
-			public void endContact(Contact contact) {
+			public void endContact (Contact contact){
 				Fixture fixtureA = contact.getFixtureA();
 				Fixture fixtureB = contact.getFixtureB();
 				// only checking if one of the fixtures is the foot sensor - if the foot sensor is one of the contacts,
@@ -102,15 +95,16 @@ public class ScrTest implements Screen, InputProcessor {
 			}
 
 			@Override
-			public void preSolve(Contact contact, Manifold oldManifold) {
+			public void preSolve (Contact contact, Manifold oldManifold){
 
 			}
 
 			@Override
-			public void postSolve(Contact contact, ContactImpulse impulse) {
+			public void postSolve (Contact contact, ContactImpulse impulse){
 
 			}
 		});
+
 		map = new Map(world, "debugroom");
 		// pass world and desired map
 	}
@@ -198,18 +192,18 @@ public class ScrTest implements Screen, InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
-		if (keycode == Input.Keys.X && player.isGrounded) {
-			player.jump();
-			player.isGrounded = false;
-		}
+//		if (keycode == Input.Keys.X && player.isGrounded) {
+//			player.jump();
+//			player.isGrounded = false;
+//		}
 		return false;
 	}
 
 	@Override
 	public boolean keyUp(int keycode) {
-		if (keycode == com.badlogic.gdx.Input.Keys.LEFT || keycode == com.badlogic.gdx.Input.Keys.RIGHT) {
-			player.stop();
-		}
+//		if (keycode == com.badlogic.gdx.Input.Keys.LEFT || keycode == com.badlogic.gdx.Input.Keys.RIGHT) {
+//			player.stop();
+//		}
 		return false;
 	}
 
