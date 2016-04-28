@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -17,6 +18,9 @@ public class Map {
 	Box2DMapObjectParser mapObjectParser;
 	String mapName;
 	BGM bgm;
+	int i, nSpawners;
+	Vector2 arV2ESpwn[];
+
 
 	Map(World world, String mapName) {
 		this.mapName = mapName;
@@ -49,23 +53,29 @@ public class Map {
 	}
 
 	public String getBGM() {
-		String BGM = (String)getMap().getLayers().get("Object Layer 1").getObjects().get("level").getProperties().get("bgm");
+		String BGM = (String) getMap().getLayers().get("World").getObjects().get("level").getProperties().get("bgm");
 		System.out.println(BGM);
 		// in the .tmx file, the entire level is wrapped in one object named "level" which contains the name of the background music
 		return BGM;
 	}
 
 	public Vector2 getSpawnpoint() {
-		MapLayer layer = this.getMap().getLayers().get("Object Layer 1");
-		RectangleMapObject spawnpoint = (RectangleMapObject)layer.getObjects().get("spawn point");
+		MapLayer layer = this.getMap().getLayers().get("World");
+		RectangleMapObject spawnpoint = (RectangleMapObject) layer.getObjects().get("spawn point");
 		return new Vector2(spawnpoint.getRectangle().getX(), spawnpoint.getRectangle().getY());
 		// basic spawnpoint, it's a object that the player is relocated to and created
 	}
 
-	public Vector2 getEnemySpawn() {
-		MapLayer layer = this.getMap().getLayers().get("Object Layer 1");
-		RectangleMapObject enemyspawn = (RectangleMapObject)layer.getObjects().get("enemy spawn");
-		return new Vector2(enemyspawn.getRectangle().getX(), enemyspawn.getRectangle().getY());
+	public Vector2[] getEnemySpawn() {
+		MapLayer layer = this.getMap().getLayers().get("Enemy Spawners");
+		MapObjects objects = layer.getObjects();
+		nSpawners = objects.getCount();
+		arV2ESpwn = new Vector2[nSpawners];
+		for (i = 0; i < nSpawners; i++) {
+			RectangleMapObject enemyspawn = (RectangleMapObject) objects.get("Espawner" + (i + 1));
+			arV2ESpwn[i] = new Vector2(enemyspawn.getRectangle().getX(), enemyspawn.getRectangle().getY());
+		}
+		return arV2ESpwn;
 	}
 
 	void pauseBGM() {

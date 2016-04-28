@@ -30,20 +30,23 @@ public class ScrTest implements Screen, InputProcessor {
 	Box2DDebugRenderer debugRenderer;
 	TiledMapRenderer tiledMapRenderer;
 	Player player;
-	Enemy[] arEnemies;
 	SpriteBatch spriteBatch;
+    int i;
+    EnemySpawner[] arSpawner;
+    Vector2[] arV2ESpwn;
+    private float deltaTime;
+    private float timer;
 
 	ScrTest(Game game) {
 		this.game = game;
 
-		arEnemies = new Enemy[2];
 		spriteBatch = new SpriteBatch();
 
 		initializeWorld();
 		initializeCamera();
 		initializePlayer();
-		initializeEnemy();
-	}
+        initializeEnemySpawner();
+    }
 
 	private void initializeWorld() {
 		world = new World(new Vector2(0, -200), true);
@@ -66,8 +69,8 @@ public class ScrTest implements Screen, InputProcessor {
 					player.isGrounded = true;
 
 
-				if (fixtureA.getFilterData().categoryBits == 5 && fixtureB.getFilterData().categoryBits == 16
-						|| fixtureA.getFilterData().categoryBits == 16 && fixtureB.getFilterData().categoryBits == 5) {
+				/*if (fixtureA.getFilterData().categoryBits == 5 && fixtureB.getFilterData().categoryBits == 16
+                        || fixtureA.getFilterData().categoryBits == 16 && fixtureB.getFilterData().categoryBits == 5) {
 					//http://box2d.org/manual.html#_Toc258082970 source for the way mask bits and categoryBits worked
 					//if (fixtureA.getFilterData().categoryBits == 5 && fixtureB.getFilterData().categoryBits == 16) {
 					if (player.nCurHealth > 0) {
@@ -76,8 +79,8 @@ public class ScrTest implements Screen, InputProcessor {
 					} else {
 						System.out.println("You are dead!");
 					}
-				}
-			}
+				}*/
+            }
 			@Override
 			public void endContact (Contact contact){
 				Fixture fixtureA = contact.getFixtureA();
@@ -121,14 +124,17 @@ public class ScrTest implements Screen, InputProcessor {
 	}
 
 	private void initializePlayer() {
-		player = new Player(world, map.getSpawnpoint());
-		player.nCurHealth = player.nFinHealth;
+        player = new Player(world, map.getSpawnpoint(), "player");
+        player.nCurHealth = player.nFinHealth;
 	}
 
-	private void initializeEnemy() {
-		for (int i = 0; i < 2; i++) {
-			arEnemies[i] = new Enemy(world, map.getEnemySpawn());
-		}
+    private void initializeEnemySpawner() {
+        arV2ESpwn = map.getEnemySpawn();
+        arSpawner = new EnemySpawner[map.nSpawners];
+        for (i = 0; i < arSpawner.length; i++) {
+            arSpawner[i] = new EnemySpawner(world, arV2ESpwn[i]);
+        }
+
 	}
 
 
@@ -139,7 +145,9 @@ public class ScrTest implements Screen, InputProcessor {
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
+        deltaTime = Gdx.graphics.getDeltaTime();
+        timer += 1 * deltaTime;
+        Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		world.step(1 / 60f, 6, 2);
 		camera.position.set(player.getPosition());
@@ -153,15 +161,16 @@ public class ScrTest implements Screen, InputProcessor {
 		// if this line wasn't here it wouldn't scale down
 		spriteBatch.begin();
 		player.draw(spriteBatch);
-		for (int i = 0; i < 2; i++) {
-			arEnemies[i].draw(spriteBatch);
-		}
-		spriteBatch.end();
+        for (i = 0; i < arSpawner.length; i++) {
+            arSpawner[i].update(player.getPosition().x, player.getPosition().y, arV2ESpwn[i], timer);
+            if (arSpawner[i].bSpawn) {
+                arSpawner[i].draw(arSpawner[i].e, spriteBatch);
+            }
+        }
+        spriteBatch.end();
 
 		player.move();
-		for (int i = 0; i < 2; i++) {
-			arEnemies[i].move(player.getPosition().x);
-		}
+
 	}
 
 	@Override
@@ -192,19 +201,19 @@ public class ScrTest implements Screen, InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
-//		if (keycode == Input.Keys.X && player.isGrounded) {
-//			player.jump();
-//			player.isGrounded = false;
-//		}
-		return false;
+        if (keycode == Input.Keys.X && player.isGrounded) {
+            player.jump();
+            player.isGrounded = false;
+        }
+        return false;
 	}
 
 	@Override
 	public boolean keyUp(int keycode) {
-//		if (keycode == com.badlogic.gdx.Input.Keys.LEFT || keycode == com.badlogic.gdx.Input.Keys.RIGHT) {
-//			player.stop();
-//		}
-		return false;
+        if (keycode == com.badlogic.gdx.Input.Keys.LEFT || keycode == com.badlogic.gdx.Input.Keys.RIGHT) {
+            player.stop();
+        }
+        return false;
 	}
 
 	@Override
